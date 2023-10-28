@@ -3,8 +3,7 @@ library(tidyverse)
 library(here)
 library(readxl)
 library(sf)
-library(tmap)
-library(tmaptools)
+
 
 geos <- read_csv(here("Raw_Data/mapsInfo.csv"))|>
   st_as_sf(wkt = "WKT")|>
@@ -31,6 +30,30 @@ fa_df <- fa_raw|>
   mutate(across(-c(1:3), ~./total_FA*100), .keep = "unused")|>
   select(-total_FA, -sample, -info)
 
+
 fa_joined <- fa_df|>left_join(fa_ids|>select(site,taxon,id), by = "id")|>
-  relocate(site,taxon)|>
-  #average the re-runs - denoted by R, average duplicates (they are analytical and don't provide info on variation)
+  mutate(id = str_remove(id, "R"))|>
+  relocate(site,taxon,id)|>
+  group_by(site, taxon,id)|>
+  summarize(across(-c(1:3), ~mean(.x, na.rm = TRUE)))|> # average the reruns
+  ungroup()|>
+  mutate(taxon = fct_collapse(taxon,
+                              Brachycentridae = c("Brachycentridae", "Bracycentridae"),
+                              Corydalidae = c("Corydalidae", "Corydalidae (small)", "Corydalidae (large)"),
+                              Hirudinidae = "Hirundinidae"))|>
+  group_by(site, taxon)|>
+  summarize(across(-c(1:3), ~mean(.x, na.rm = TRUE)))|> #average the replicates
+  mutate(taxon = as_factor(taxon))
+
+#set ffg's
+taxa_pred <- c("Calopterygidae", "Aeshnidae", "Athericidae", "Belostomatidae")
+taxa_collgath <- c("Baetidae", )
+taxa_graze <- NULL
+taxa_shred <- NULL
+
+df <- fa_joined|>
+  mutate(ffg = case_when(taxon %in% taxa_pred ~ "predator"))|>relocate(ffg)
+blah <- fa_joined|>ungroup()|>distinct(taxon)|>pull()|>str_sort()|>as_tibble()
+
+
+

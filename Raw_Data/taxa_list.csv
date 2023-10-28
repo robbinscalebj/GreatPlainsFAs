@@ -1,0 +1,43 @@
+value,ffg,order
+Aeshnidae,predator,odonata
+Athericidae,predator,diptera
+Baetidae,collector-gatherer,ephemeroptera
+Belostomatidae,predator,hemiptera
+Brachycentridae,collector-gatherer,trichoptera
+Calopterygidae,predator,odonata
+Cambaridae,collector-gatherer,decapoda
+Chironomidae,collector-gatherer,diptera
+Coenagrionidae,predator,odonata
+Corbicula fluminea,collector-filterer,bivalve
+Corixidae,predator,hemiptera
+Corydalidae,predator,megaloptera
+Dreissena polymorpha,collector-filterer,bivalve
+Dytiscidae,predator,coleoptera
+Dytiscidae (adult),predator,coleoptera
+Elmidae (adult),shredder,coleoptera
+Gomphidae,predator,odonata
+Gyrinidae,predator,coleoptera
+Helicopsychidae,scraper,trichoptera
+Heptageniidae,scraper,ephemeroptera
+Hirudinidae,predator,hirudinea
+Hydrophilidae,predator,coleoptera
+Hydrophilidae (adult),predator,coleoptera
+Hydropsychidae,collector-filterer,trichoptera
+Isonychiidae,collector-gatherer,ephemeroptera
+Leptoceridae,predator,trichoptera
+Leptohyphidae,collector-gatherer,ephemeroptera
+Leptophlebiidae,collector-gatherer,ephemeroptera
+Libellulidae,predator,odonata
+Naucoridae,predator,hemiptera
+Oligochaete,collector-gatherer,oligochaeta
+Palaemonidae,scraper,decapoda
+Perlidae,predator,plecoptera
+Philopotamidae,collector-filterer,trichoptera
+Physidae,scraper,gastropod
+Planorbidae,scraper,gastropod
+Pteronarcyidae,predator,plecoptera
+Simuliidae,shredder,diptera
+Siphlonuridae,collector-gatherer,ephemeroptera
+Stratiomyidae,collector-gatherer,diptera
+Tabanidae,predator,diptera
+Tipulidae,predator,diptera
