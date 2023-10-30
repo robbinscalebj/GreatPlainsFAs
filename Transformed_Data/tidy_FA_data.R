@@ -5,10 +5,6 @@ library(readxl)
 library(sf)
 
 
-geos <- read_csv(here("Raw_Data/mapsInfo.csv"))|>
-  st_as_sf(wkt = "WKT")|>
-  mutate(new_name = ifelse(!is.na(description), description, name))|>
-  filter(!str_detect(new_name,"NEON")) #eventually get lat longs into file
 
 
 # load information on sample IDs needed to identify from FA runs
@@ -46,14 +42,27 @@ fa_joined <- fa_df|>left_join(fa_ids|>select(site,taxon,id), by = "id")|>
   mutate(taxon = as_factor(taxon))
 
 #set ffg's
-taxa_pred <- c("Calopterygidae", "Aeshnidae", "Athericidae", "Belostomatidae")
-taxa_collgath <- c("Baetidae", )
-taxa_graze <- NULL
-taxa_shred <- NULL
+ffg_df <- read_csv(here("Raw_Data/taxa_list.csv"))
+
+geos <- read_csv(here("Raw_Data/mapsInfo.csv"))|>
+  st_as_sf(wkt="WKT")
+  mutate(new_name = ifelse(!is.na(description), description, name))|>
+  filter(!str_detect(new_name,"NEON"))|>
+  mutate(new_name = str_remove(new_name, " Creek"),
+         new_name = str_remove(new_name, " River"),
+         new_name = fct_recode(new_name, "NF Ninnescah" = "N Fork Ninnescah"))|>
+  rename(site = "new_name")
+geo_names <- geos|>distinct(new_name)|>pull()
 
 df <- fa_joined|>
-  mutate(ffg = case_when(taxon %in% taxa_pred ~ "predator"))|>relocate(ffg)
-blah <- fa_joined|>ungroup()|>distinct(taxon)|>pull()|>str_sort()|>as_tibble()
+  left_join(ffg_df)|>
+  relocate(ffg)|>
+  mutate(site = str_remove(site, " Creek"),
+         site = str_remove(site, " River"),
+         site = fct_recode(site, "N Canadian" = "N. Canadian", "Arkansas" = "Arkansas R."))|>
+  left_join(geos|>select(WKT, site))|>
+  relocate(site, WKT)
 
 
+write_csv(df, here("Transformed_Data/tidied_df.csv"))
 

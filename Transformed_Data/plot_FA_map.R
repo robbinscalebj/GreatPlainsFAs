@@ -1,5 +1,13 @@
-geos <- read_csv(here("Raw_Data/mapsInfo.csv"))|>
-  st_as_sf(wkt = "WKT")
+library(tidyverse)
+library(here)
+library(tigris)
+library(sf)
+library(tmap)
+library(tmaptools)
+
+geos_df <- read_csv(here("Transformed_Data/tidied_df.csv"))|>
+  mutate(WKT = str_remove(WKT, "POINT ("),
+         WKT = str_remove(WKT, ")"))
 gp_states <- tigris::states(cb = TRUE, resolution = "20m", class = "sf") %>%
   filter(STUSPS %in% c("TX", "OK", "KS", "NE", "SD", "ND"))
 
@@ -16,5 +24,5 @@ tm_shape(all_states, is.main = TRUE, bbox = tmaptools::bb(all_states, xlim = c(-
 
 
 
-tm_shape(geos)+
+tm_shape(df)+
   tm_symbols(alpha = 0.2)

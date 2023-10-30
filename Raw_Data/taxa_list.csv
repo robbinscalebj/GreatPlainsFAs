@@ -1,4 +1,4 @@
-value,ffg,order
+taxon,ffg,order
 Aeshnidae,predator,odonata
 Athericidae,predator,diptera
 Baetidae,collector-gatherer,ephemeroptera
@@ -33,8 +33,8 @@ Oligochaete,collector-gatherer,oligochaeta
 Palaemonidae,scraper,decapoda
 Perlidae,predator,plecoptera
 Philopotamidae,collector-filterer,trichoptera
-Physidae,scraper,gastropod
-Planorbidae,scraper,gastropod
+Physidae,scraper,gastropoda
+Planorbidae,scraper,gastropoda
 Pteronarcyidae,predator,plecoptera
 Simuliidae,shredder,diptera
 Siphlonuridae,collector-gatherer,ephemeroptera
