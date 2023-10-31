@@ -10,7 +10,8 @@ library(sf)
 # load information on sample IDs needed to identify from FA runs
 fa_ids <- read_csv(here("Raw_Data/FA_sample_inventory.csv"))|>
   rename(site = "Site Name", taxon = "Taxon (Family) Name", wet_mass_mg = "Total blot mass (mg)", id = "FA Tube ID")|>
-  mutate(id = ifelse(id == "n/a", NA_real_, id))|>
+  mutate(id = ifelse(id == "n/a", NA_real_, id),
+         site = str_remove_all(site, fixed("-")))|>
   filter(!is.na(id))
 
 # FA data
@@ -26,7 +27,7 @@ fa_df <- fa_raw|>
   mutate(across(-c(1:3), ~./total_FA*100), .keep = "unused")|>
   select(-total_FA, -sample, -info)
 
-
+#join FA to site/taxa info
 fa_joined <- fa_df|>left_join(fa_ids|>select(site,taxon,id), by = "id")|>
   mutate(id = str_remove(id, "R"))|>
   relocate(site,taxon,id)|>
@@ -45,14 +46,13 @@ fa_joined <- fa_df|>left_join(fa_ids|>select(site,taxon,id), by = "id")|>
 ffg_df <- read_csv(here("Raw_Data/taxa_list.csv"))
 
 geos <- read_csv(here("Raw_Data/mapsInfo.csv"))|>
-  st_as_sf(wkt="WKT")
   mutate(new_name = ifelse(!is.na(description), description, name))|>
   filter(!str_detect(new_name,"NEON"))|>
   mutate(new_name = str_remove(new_name, " Creek"),
          new_name = str_remove(new_name, " River"),
          new_name = fct_recode(new_name, "NF Ninnescah" = "N Fork Ninnescah"))|>
   rename(site = "new_name")
-geo_names <- geos|>distinct(new_name)|>pull()
+geo_names <- geos|>distinct(site)|>pull()
 
 df <- fa_joined|>
   left_join(ffg_df)|>
@@ -66,3 +66,8 @@ df <- fa_joined|>
 
 write_csv(df, here("Transformed_Data/tidied_df.csv"))
 
+write_csv(df|>)
+
+ggplot(df|>filter(ffg == "predator"))+
+  geom_point(aes(x = taxon, y = `20:5w3`))+
+  theme(axis.text.x = element_text(angle = 45))
