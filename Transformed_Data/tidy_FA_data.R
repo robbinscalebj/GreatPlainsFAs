@@ -69,5 +69,17 @@ write_csv(df, here("Transformed_Data/tidied_df.csv"))
 write_csv(df|>)
 
 ggplot(df|>filter(ffg == "predator"))+
-  geom_point(aes(x = taxon, y = `20:5w3`))+
+  geom_point(aes(x = taxon, y = log(`20:5w3`)))+
   theme(axis.text.x = element_text(angle = 45))
+
+
+df_for_nmds <- df|>ungroup()|>select(-c(1:4),-order, -`16:1w6`, -`24:0`)|>
+  mutate(across(everything(), ~ifelse(. <0, 0, .)))
+df_env <- df|>select(1:4, order)
+
+fa.mds <- metaMDS(df_for_nmds, distance = "bray", autotransform = FALSE, na.rm = TRUE)
+
+ordiplot(fa.mds, type = "n", main = "hulls")
+#orditorp(fa.mds, display = "sites", labels = F, pch = c(16, 8, 17, 18) [as.numeric(df_env$site)], col = c("green", "blue", "orange", "black") [as.numeric(df_env$site)], cex = 1)
+ordihull(fa.mds, groups = df_env$ffg, draw = "polygon", lty = 1, col = "grey90")
+

@@ -12,8 +12,7 @@ geos_df <- read_csv(here("Transformed_Data/tidied_df.csv"))|>
 
 write_csv(geos_df|>select(longitude,latitude,site)|>distinct(),"latlongs.csv")
 
-hp <- geos_df|>filter(taxon == "Hydropsychidae")|>
-  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+
 
 gp_states <- tigris::states(cb = TRUE, resolution = "20m", class = "sf") %>%
   filter(STUSPS %in% c("TX", "OK", "KS", "NE", "SD", "ND"))
@@ -29,8 +28,16 @@ tm_shape(all_states, is.main = TRUE, bbox = tmaptools::bb(all_states, xlim = c(-
   tm_shape(gp_states)+
   tm_polygons()
 
+hp <- geos_df|>filter(taxon == "Hydropsychidae")|>
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
 tm_shape(all_states, is.main = TRUE, bbox = tmaptools::bb(all_states, xlim = c(-107,-93), ylim = c(26,49)))+
-  tm_polygons()+
+  tm_polygons(col = "white")+
 tm_shape(hp)+
-  tm_symbols(alpha = 0.2, size = "22:5w6")
+  tm_symbols(alpha = 0.2, size = "20:5w3", scale = 2)
+
+
+tm_shape(all_states, is.main = TRUE, bbox = tmaptools::bb(all_states, xlim = c(-107,-93), ylim = c(26,49)))+
+  tm_polygons(col = "white")+
+  tm_shape(hp)+
+  tm_symbols(alpha = 0.2, size = "20:5w3", scale = 2)
